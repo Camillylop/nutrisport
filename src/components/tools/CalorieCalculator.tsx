@@ -1,37 +1,20 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, ArrowRight } from 'lucide-react';
+import { useCalorieCalculator, Gender, ActivityLevel } from '@/hooks/useCalorieCalculator';
 
 const CalorieCalculator = () => {
-    const [gender, setGender] = useState<string>('male');
-    const [age, setAge] = useState<string>('');
-    const [weight, setWeight] = useState<string>('');
-    const [height, setHeight] = useState<string>('');
-    const [activity, setActivity] = useState<string>('1.2');
-    const [result, setResult] = useState<{ bmr: number; tdee: number } | null>(null);
-
-    const calculate = () => {
-        const w = parseFloat(weight);
-        const h = parseFloat(height);
-        const a = parseFloat(age);
-        const act = parseFloat(activity);
-
-        if (isNaN(w) || isNaN(h) || isNaN(a)) return;
-
-        let bmr = 0;
-        if (gender === 'male') {
-            bmr = 10 * w + 6.25 * h - 5 * a + 5;
-        } else {
-            bmr = 10 * w + 6.25 * h - 5 * a - 161;
-        }
-
-        const tdee = bmr * act;
-        setResult({ bmr: Math.round(bmr), tdee: Math.round(tdee) });
-    };
+    const {
+        gender, setGender,
+        age, setAge,
+        weight, setWeight,
+        height, setHeight,
+        activity, setActivity,
+        result, calculate
+    } = useCalorieCalculator();
 
     return (
         <section id="calculadora" className="py-16 lg:py-24 bg-background relative overflow-hidden">
@@ -81,7 +64,7 @@ const CalorieCalculator = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label>Gênero</Label>
-                                    <Select value={gender} onValueChange={setGender}>
+                                    <Select value={gender} onValueChange={(val) => setGender(val as Gender)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecione" />
                                         </SelectTrigger>
@@ -128,7 +111,7 @@ const CalorieCalculator = () => {
 
                             <div className="space-y-2">
                                 <Label>Nível de Atividade</Label>
-                                <Select value={activity} onValueChange={setActivity}>
+                                <Select value={activity} onValueChange={(val) => setActivity(val as ActivityLevel)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione" />
                                     </SelectTrigger>
